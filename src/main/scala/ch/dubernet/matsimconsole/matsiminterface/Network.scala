@@ -33,37 +33,44 @@ object Network {
   private type MatsimNode = org.matsim.api.core.v01.network.Node
   private type MatsimLink = org.matsim.api.core.v01.network.Link
 
-  private def fromMatsimNetwork( network: MatsimNetwork ): Network = {
-    // I am sure there is a nicer solution using lazy data structures and monads instead of a mutable map...
-    def createNode( matsimNode: MatsimNode , knownNodes: mutable.Map[Id[Node],Node] = mutable.HashMap()): Node = {
-      val id: Id[Node] = Id.create( matsimNode.getId , classOf[Node] )
+  // I am sure there is a nicer solution using lazy data structures and monads instead of a mutable map...
+  private class Converter {
+    val knownNodes: mutable.Map[Id[Node],Node] = mutable.HashMap()
+    val knownLinks: mutable.Map[Id[Link],Link] = mutable.HashMap()
+
+    def apply( node: MatsimNode ): Node = {
+      val id: Id[Node] = Id.create( node.getId , classOf[Node] )
 
       knownNodes.get( id ) match {
         case Some( n ) => n
         case None =>
-          Node(
+          new Node(
             id ,
-            Coord( matsimNode.getCoord ),
-            ( matsimNode.getInLinks.values map {createLink( _ , knownNodes ) } ).toList,
-            ( matsimNode.getOutLinks.values map {createLink( _ , knownNodes ) } ).toList )
+            Coord( node.getCoord ),
+            ( node.getInLinks.values map {this( _ ) } ).toList,
+            ( node.getOutLinks.values map {this( _ ) } ).toList )
       }
     }
 
-    def createLink( matsimLink: MatsimLink , knownNodes: mutable.Map[Id[Node],Node] ): Link = {
-      val id: Id[Link] = Id.create( matsimLink.getId , classOf[Link] )
-      val idStart: Id[Node] = Id.create( matsimLink.getFromNode.getId , classOf[Node] )
-      val idEnd: Id[Node] = Id.create( matsimLink.getToNode.getId , classOf[Node] )
-      val start = knownNodes.getOrElse( idStart , createNode( matsimLink.getFromNode , knownNodes ) )
-      val end = knownNodes.
-        getOrElse(
-          idEnd,
-          createNode(
-            matsimLink.getToNode,
-            knownNodes
-                .updated( idStart , start )) )
-      Link( id , start , end )
-    }
+    def apply( link: MatsimLink ): Link = {
+      val id: Id[Link] = Id.create( link.getId , classOf[Link] )
 
-    ???
+      knownLinks.get( id ) match {
+        case Some( n ) => n
+        case None =>
+          new Link(
+            id ,
+            this( link.getFromNode ),
+            this( link.getToNode ) )
+      }
+    }
+  }
+
+  private def apply( network: MatsimNetwork ): Network = {
+    val convert = new Converter
+
+    new Network(
+      network.getLinks.values map { convert( _ ) } map { l => (l.id, l) } toMap,
+      network.getNodes.values map { convert( _ ) } map { n => (n.id, n) } toMap )
   }
 }
