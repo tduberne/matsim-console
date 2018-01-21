@@ -10,8 +10,6 @@ class Network( val links: Map[Id[Link],Link], val nodes: Map[Id[Node],Node] ) {
 
 }
 
-case class Coord( val x: Double, val y: Double )
-case class CoordZ( override val x: Double, override val y: Double, z: Double ) extends Coord(x,y)
 
 class Link( val id: Id[Link], startByName: => Node, endByName: => Node ) {
   // gets evaluated once, the first time it is accessed
@@ -24,13 +22,7 @@ class Node( val id: Id[Node], val coord: Coord, inLinksByName: => List[Link], ou
   lazy val outLinks = outLinksByName
 }
 
-object Coord {
-  private type MatsimCoord = org.matsim.api.core.v01.Coord
-  def apply( matsimCoord: MatsimCoord ): Coord = {
-    if ( matsimCoord.hasZ ) CoordZ( matsimCoord.getX , matsimCoord.getY , matsimCoord.getZ )
-    else Coord( matsimCoord.getX , matsimCoord.getY )
-  }
-}
+
 
 object Network {
   private type MatsimNetwork = org.matsim.api.core.v01.network.Network
