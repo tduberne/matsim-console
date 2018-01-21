@@ -11,6 +11,7 @@ class Network( val links: Map[Id[Link],Link], val nodes: Map[Id[Node],Node] ) {
 }
 
 case class Coord( val x: Double, val y: Double, val z: Double )
+
 class Link( val id: Id[Link], startByName: => Node, endByName: => Node ) {
   // gets evaluated once, the first time it is accessed
   lazy val start = startByName
@@ -24,8 +25,11 @@ class Node( val id: Id[Node], val coord: Coord, inLinksByName: => List[Link], ou
 
 object Coord {
   private type MatsimCoord = org.matsim.api.core.v01.Coord
-  def apply( matsimCoord: MatsimCoord ): Coord =
-    Coord( matsimCoord.getX , matsimCoord.getY , matsimCoord.getZ )
+  def apply( matsimCoord: MatsimCoord ): Coord = {
+    // need to solve better...
+    if ( matsimCoord.hasZ ) Coord( matsimCoord.getX , matsimCoord.getY , matsimCoord.getZ )
+    else Coord( matsimCoord.getX , matsimCoord.getY , -1 )
+  }
 }
 
 object Network {
