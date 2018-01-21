@@ -66,7 +66,7 @@ object Network {
     }
   }
 
-  private def apply( network: MatsimNetwork ): Network = {
+  def apply( network: MatsimNetwork ): Network = {
     val convert = new Converter
 
     new Network(
