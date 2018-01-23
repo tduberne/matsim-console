@@ -6,10 +6,6 @@ import org.matsim.facilities.ActivityFacility
 
 trait HasCoord {
   def coord: Coord
-
-  def x: Double = coord.x
-  def y: Double = coord.y
-  def z: Double = coord.z
 }
 
 trait Event {

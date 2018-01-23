@@ -1,7 +1,6 @@
 package ch.dubernet.matsimconsole.matsiminterface
 
 class Coord( val x: Double, val y: Double , val z: Option[Double] )
-class Coord( val x: Double, val y: Double , val z: Option[Double] )
 
 object Coord {
   private type MatsimCoord = org.matsim.api.core.v01.Coord
@@ -14,9 +13,8 @@ object Coord {
     else Coord( matsimCoord.getX , matsimCoord.getY )
   }
 
-  def unapply( coord: Coord ): Option[(Double,Double)] = Some((coord.x , coord.y))
-  def unapply( coord: Coord ): Option[(Double,Double,Double)] = coord.z match {
-    case Some( z ) => Some( (coord.x , coord.y , z ) )
-    case None => None
+  def unapplySeq( coord: Coord ): Option[Seq[Double]] = coord.z match {
+    case Some( z ) => Some( List( coord.x , coord.y , z ) )
+    case None => Some( List( coord.x , coord.y ) )
   }
 }
