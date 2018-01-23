@@ -37,28 +37,22 @@ object Network {
     def apply( node: MatsimNode ): Node = {
       val id: Id[Node] = Id.create( node.getId , classOf[Node] )
 
-      knownNodes.get( id ) match {
-        case Some( n ) => n
-        case None =>
+      knownNodes.getOrElseUpdate( id,
           new Node(
             id ,
             Coord( node.getCoord ),
             ( node.getInLinks.values map {this( _ ) } ).toList,
-            ( node.getOutLinks.values map {this( _ ) } ).toList )
-      }
+            ( node.getOutLinks.values map {this( _ ) } ).toList ) )
     }
 
     def apply( link: MatsimLink ): Link = {
       val id: Id[Link] = Id.create( link.getId , classOf[Link] )
 
-      knownLinks.get( id ) match {
-        case Some( n ) => n
-        case None =>
+      knownLinks.getOrElseUpdate( id ,
           new Link(
             id ,
             this( link.getFromNode ),
-            this( link.getToNode ) )
-      }
+            this( link.getToNode ) ) )
     }
   }
 
