@@ -14,5 +14,6 @@ object EventsPrototype {
   } toList
 
   // no need for special event handlers: partial functions filter out uninteresting events
-  Stream(Event1(0), Event2(0), Event2(1), Event3(1)) map { case Event1(t) => t } toList
+  // need to use collect instead of map to use this feature
+  List(Event1(0), Event2(0), Event2(1), Event3(1)) collect { case Event2(t) => t }
 }
