@@ -4,10 +4,6 @@ import org.matsim.api.core.v01.Id
 import org.matsim.api.core.v01.population.Person
 import org.matsim.facilities.ActivityFacility
 
-trait HasCoord {
-  def coord: Coord
-}
-
 trait Event {
   val time: Double
 }
