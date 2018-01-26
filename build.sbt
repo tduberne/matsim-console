@@ -11,5 +11,7 @@ libraryDependencies += "org.matsim" % "matsim" % "0.9.0"
 libraryDependencies += "junit" % "junit" % "4.10" % Test
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.1" % "test"
 
+libraryDependencies += "org.processing" % "core" % "2.2.1"
+
 // compiler checks. see www.wartremover.org
 //wartremoverErrors ++= Warts.unsafe
