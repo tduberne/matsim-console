@@ -13,5 +13,8 @@ libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.1" % "test"
 
 libraryDependencies += "org.processing" % "core" % "2.2.1"
 
+// for FRP
+libraryDependencies += "com.lihaoyi" %% "scalarx" % "0.3.2"
+
 // compiler checks. see www.wartremover.org
 //wartremoverErrors ++= Warts.unsafe
