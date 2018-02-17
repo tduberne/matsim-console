@@ -1,6 +1,9 @@
 package ch.dubernet.matsimconsole.matsiminterface
 
-import org.matsim.api.core.v01.Id
+import org.matsim.api.core.v01.{Id, Scenario}
+import org.matsim.core.config.ConfigUtils
+import org.matsim.core.network.io.MatsimNetworkReader
+import org.matsim.core.scenario.ScenarioUtils
 
 import scala.collection.mutable
 import scala.collection.JavaConversions._
@@ -62,5 +65,11 @@ object Network {
     new Network(
       network.getLinks.values map { convert( _ ) } map { l => (l.id, l) } toMap,
       network.getNodes.values map { convert( _ ) } map { n => (n.id, n) } toMap )
+  }
+
+  def apply( file: String ): Network = {
+    val sc: Scenario = ScenarioUtils.createScenario( ConfigUtils.createConfig() );
+    new MatsimNetworkReader( sc.getNetwork ).readFile( file );
+    Network( sc.getNetwork )
   }
 }
